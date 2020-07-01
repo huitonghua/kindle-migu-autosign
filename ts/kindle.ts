@@ -35,11 +35,16 @@
   interface Device {
     width: number;
     height: number;
+    brand?: string;
+    device?: string;
+    modal?: string;
+    hardware?: string;
+    product?: string;
   }
 
   const device: Device = {
     width: 300,
-    height: 900
+    height: 900,
   }
 
   interface ClassName {
@@ -98,22 +103,37 @@
   const initDate: number = Date.now();
   const width: number = device.width;
   const height: number = device.height;
+  const { brand, hardware, device: devices, modal, product } = device;
 
   const init: (arg?: string) => void = () => {
     setScreenMetrics(width, height);
-    clickBooks();
-    signIn();
     findBook();
+    // bookSign();
+    findFirstBook();
     reader();
   }
 
   const clickBooks = function (arg?: string): void {
     // 获取图书按钮节点
-
     // TODO
     click(225 + 20, 1728 + 30);
     sleep(500);
 
+  }
+
+  // 新的签到领书券地址
+  const bookSign = function (): void {
+    const target: any = className("android.widget.TextView").text("签到领书券").findOne();
+    console.log("target", target)
+    if (target) {
+      click(target.bounds().centerX(), target.bounds().centerY());
+      sleep(1000);
+    }
+
+    const more: any = className("android.widget.TextView").text("更多福利").findOne();
+    if (more) {
+      return;
+    }
   }
 
   const signIn = (arg?: string): void => {
@@ -143,17 +163,19 @@
   const findBook: (arg?: string) => void = function () {
     sleep(1000);
     // 点击书架 TODO
-    click(15, 1728);
+    const yAxis: number = brand === "Xiaomi" ? 1928 : 1728;
+    click(15, yAxis);
     sleep(1000)
+  }
+
+  const findFirstBook: (arg?: string) => void = function (): void {
     // 点击书架上第一本书
-    const target = id("book_name").className("android.widget.TextView").drawingOrder(1).findOne();
+    const target: any = id("book_name").className("android.widget.TextView").drawingOrder(1).findOne();
     click(target.bounds().centerX(), target.bounds().centerY())
     sleep(1000)
   }
 
   const scrollPage: () => void = function () {
-    //点击控件时检查是否进入了验证页面
-
     //获取这个控件
     const widget: any = className("android.widget.LinearLayout").depth(1).findOne();
     click(Math.round(widget.bounds().centerX() + widget.bounds().centerX() / 1.5),
@@ -162,7 +184,7 @@
 
   // 自动翻页
   let timer: any;
-  const readPageTime: number = Math.floor(Math.random() * 10 + 1) * 100 + 3000;
+  const readPageTime: number = Math.floor(Math.random() * 10 + 1) * 100 + 60*1000;
   const readerMinute: number = 1;
   function reader(): void {
     timer && clearTimeout(timer);
