@@ -184,8 +184,11 @@
 
   // 自动翻页
   let timer: any;
-  const readPageTime: number = Math.floor(Math.random() * 10 + 1) * 100 + 60*1000;
-  const readerMinute: number = 1;
+  // 固定花多少秒翻一本书
+  const solidReadePageTime: number = 20;
+  const readPageTime: number = Math.floor(Math.random() * 10 + 1) * 1000 + solidReadePageTime * 1000;
+  // 阅读总时长数字
+  const readerMinute: number = 20;
   function reader(): void {
     timer && clearTimeout(timer);
     // 阅读分钟数
